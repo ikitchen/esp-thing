@@ -19,7 +19,7 @@ void onSubscribe(MQTTClient &mqttClient)
     mqttClient.subscribe("u/mk/light");
 }
 
-MQTTNode mNode(onSubscribe, RESET_BUTTON);
+MQTTNode *mNode;
 
 void messageReceived(String &topic, String &payload)
 {
@@ -39,18 +39,23 @@ void messageReceived(String &topic, String &payload)
 
 void setup()
 {
+    mNode = MQTTNode::getInstance();
+
+    mNode->setResetPin(RESET_BUTTON);
+    mNode->setOnSubscribe(onSubscribe);
+
     pinMode(LIGHT, OUTPUT);
     Serial.begin(9600);
-    // mNode.mqttClient.onMessage(messageReceived);
-    mNode.setup();
+    mNode->mqttClient.onMessage(messageReceived);
+    mNode->setup();
 }
 
 void loop()
 {
-    mNode.loop();
+    mNode->loop();
     if (millis() - lastMillis > 1000)
     {
         lastMillis = millis();
-        mNode.mqttClient.publish("u/mk/uptime", String(millis()));
+        mNode->mqttClient.publish("u/mk/uptime", String(millis()));
     }
 }

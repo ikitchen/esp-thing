@@ -12,7 +12,6 @@ typedef void (*SubscribeCallback)(MQTTClient &mqttClient);
 
 class MQTTNode
 {
-private:
   WiFiClient wifiClient;
   WiFiManager wifiManager;
   SubscribeCallback onSub;
@@ -21,16 +20,28 @@ private:
   char mqtt_username[50];
   char mqtt_password[50];
   char mqtt_prefix[53];
+  int mqtt_prefix_len;
   int rPin;
   void connect();
-  void messageReceived(String &topic, String &payload);
+  MQTTNode();
 
 public:
-  MQTTNode(SubscribeCallback onSubscribe, int resetPin);
+  static MQTTNode *instance;
+  static MQTTNode *getInstance()
+  {
+    if (instance == 0)
+    {
+      instance = new MQTTNode();
+    }
+    return instance;
+  }
   MQTTClient mqttClient;
   void setup();
   void loop();
   void publishNs(const char topic[], const String &payload);
+  bool matchWithPrefix(const char topic[], const char topicSuffix[]);
+  void setResetPin(int resetPin);
+  void setOnSubscribe(SubscribeCallback onSubscribe);
 };
 
 #endif

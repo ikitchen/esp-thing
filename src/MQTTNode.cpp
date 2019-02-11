@@ -1,13 +1,23 @@
 #include "MQTTNode.h"
 
-MQTTNode::MQTTNode(SubscribeCallback onSubscribe, int resetPin)
+MQTTNode::MQTTNode()
 {
-    onSub = onSubscribe;
-    rPin = resetPin;
     strcpy(mqtt_server, "mqtt.boto.space");
     strcpy(mqtt_port, "1883");
     strcpy(mqtt_username, "");
     strcpy(mqtt_password, "");
+}
+
+MQTTNode *MQTTNode::instance = 0;
+
+void MQTTNode::setResetPin(int resetPin)
+{
+    this->rPin = resetPin;
+}
+
+void MQTTNode::setOnSubscribe(SubscribeCallback onSubscribe)
+{
+    this->onSub = onSubscribe;
 }
 
 void MQTTNode::setup()
@@ -120,18 +130,34 @@ void MQTTNode::setup()
     strcpy(mqtt_prefix, "u/");
     strcat(mqtt_prefix, mqtt_username);
     strcat(mqtt_prefix, "/");
+    mqtt_prefix_len = strlen(mqtt_prefix);
+
     Serial.print("N: mqtt_prefix=");
     Serial.println(mqtt_prefix);
+
     mqttClient.begin(mqtt_server, wifiClient);
-    
-    mqttClient.onMessage([this](String &topic, String &payload) {
-        Serial.println("incoming: " + topic + " - " + payload);
-    });
+
     connect();
 }
 
-void MQTTNode::messageReceived(String &topic, String &payload)
+bool MQTTNode::matchWithPrefix(const char topic[], const char topicSuffix[])
 {
+    // topic: "u/mk/foo"
+    // mqtt_prefix: "u/mk/"
+    // topicSuffix: "foo"
+
+    String strTopic(topic);
+    if (!strTopic.startsWith(mqtt_prefix))
+    {
+        return false;
+    }
+
+    if (!strTopic.substring(mqtt_prefix_len).equals(topicSuffix))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 void MQTTNode::connect()
