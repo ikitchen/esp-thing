@@ -8,7 +8,9 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h> //https://github.com/tzapu/WiFiManager
 
-typedef void (*SubscribeCallback)(MQTTClient &mqttClient);
+class MQTTNode;
+
+typedef void (*SubscribeCallback)(MQTTNode *mqttNode);
 typedef void (*MessageCallback)(String &topic, String &originalTopic, String &payload);
 void MQTTNodeMessageReceived(String &topic, String &payload);
 
@@ -42,6 +44,7 @@ public:
   void setup();
   void loop();
   void publish(const String &topic, const String &payload);
+  void subscribe(const String &topic);
   bool matchWithPrefix(const char topic[], const char topicSuffix[]);
   bool startsWithPrefix(String &topic) { return topic.startsWith(mqtt_prefix); };
   int getPrefixLength() { return mqtt_prefix_len; };

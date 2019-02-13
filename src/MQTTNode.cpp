@@ -63,7 +63,7 @@ void MQTTNode::connect()
 
     Serial.println("\nN: connected!");
 
-    onSub(mqttClient);
+    onSub(this);
 }
 
 void MQTTNode::loop()
@@ -80,6 +80,11 @@ void MQTTNode::loop()
 void MQTTNode::publish(const String &topic, const String &payload)
 {
     mqttClient.publish(mqtt_prefix + topic, payload);
+}
+
+void MQTTNode::subscribe(const String &topic)
+{
+    mqttClient.subscribe(mqtt_prefix + topic);
 }
 
 void MQTTNode::setup()

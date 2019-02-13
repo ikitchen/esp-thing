@@ -14,9 +14,9 @@
 
 unsigned long lastMillis = 0;
 
-void onSubscribe(MQTTClient &mqttClient)
+void onSubscribe(MQTTNode *mNode)
 {
-    mqttClient.subscribe("u/mk/light");
+    mNode->subscribe("light");
 }
 
 MQTTNode *mNode;
