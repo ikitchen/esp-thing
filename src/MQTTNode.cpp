@@ -20,6 +20,68 @@ void MQTTNode::setOnSubscribe(SubscribeCallback onSubscribe)
     this->onSub = onSubscribe;
 }
 
+void MQTTNode::setOnMessage(MessageCallback onMessage)
+{
+    this->onMessage = onMessage;
+}
+
+bool MQTTNode::matchWithPrefix(const char topic[], const char topicSuffix[])
+{
+    // topic: "u/mk/foo"
+    // mqtt_prefix: "u/mk/"
+    // topicSuffix: "foo"
+
+    String strTopic(topic);
+    if (!strTopic.startsWith(mqtt_prefix))
+    {
+        return false;
+    }
+
+    if (!strTopic.substring(mqtt_prefix_len).equals(topicSuffix))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void MQTTNode::connect()
+{
+    Serial.print("N: checking wifi...");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.print(".");
+        delay(1000);
+    }
+
+    Serial.print("\nN: connecting...");
+    while (!mqttClient.connect(WiFi.macAddress().c_str(), mqtt_username, mqtt_password))
+    {
+        Serial.print(".");
+        delay(1000);
+    }
+
+    Serial.println("\nN: connected!");
+
+    onSub(mqttClient);
+}
+
+void MQTTNode::loop()
+{
+    mqttClient.loop();
+    delay(10); // <- fixes some issues with WiFi stability
+
+    if (!mqttClient.connected())
+    {
+        connect();
+    }
+}
+
+void MQTTNode::publish(const String &topic, const String &payload)
+{
+    mqttClient.publish(mqtt_prefix + topic, payload);
+}
+
 void MQTTNode::setup()
 {
     //read configuration from FS json
@@ -136,63 +198,17 @@ void MQTTNode::setup()
     Serial.println(mqtt_prefix);
 
     mqttClient.begin(mqtt_server, wifiClient);
+    mqttClient.onMessage(MQTTNodeMessageReceived); //TODO: change to static?
 
     connect();
 }
 
-bool MQTTNode::matchWithPrefix(const char topic[], const char topicSuffix[])
+void MQTTNodeMessageReceived(String &topic, String &payload)
 {
-    // topic: "u/mk/foo"
-    // mqtt_prefix: "u/mk/"
-    // topicSuffix: "foo"
-
-    String strTopic(topic);
-    if (!strTopic.startsWith(mqtt_prefix))
+    auto self = MQTTNode::getInstance();
+    if (self->startsWithPrefix(topic))
     {
-        return false;
+        String topicWithoutPrefix = topic.substring(self->getPrefixLength());
+        self->onMessage(topicWithoutPrefix, topic, payload);
     }
-
-    if (!strTopic.substring(mqtt_prefix_len).equals(topicSuffix))
-    {
-        return false;
-    }
-
-    return true;
-}
-
-void MQTTNode::connect()
-{
-    Serial.print("N: checking wifi...");
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        Serial.print(".");
-        delay(1000);
-    }
-
-    Serial.print("\nN: connecting...");
-    while (!mqttClient.connect(WiFi.macAddress().c_str(), mqtt_username, mqtt_password))
-    {
-        Serial.print(".");
-        delay(1000);
-    }
-
-    Serial.println("\nN: connected!");
-
-    onSub(mqttClient);
-}
-
-void MQTTNode::loop()
-{
-    mqttClient.loop();
-    delay(10); // <- fixes some issues with WiFi stability
-
-    if (!mqttClient.connected())
-    {
-        connect();
-    }
-}
-
-void MQTTNode::publishNs(const char topic[], const String &payload)
-{
-    mqttClient.publish(topic, payload);
 }

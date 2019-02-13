@@ -21,10 +21,10 @@ void onSubscribe(MQTTClient &mqttClient)
 
 MQTTNode *mNode;
 
-void messageReceived(String &topic, String &payload)
+void messageReceived(String &topic, String &originalTopic, String &payload)
 {
     Serial.println("incoming: " + topic + " - " + payload);
-    if (topic == "u/mk/light")
+    if (topic == "light")
     {
         if (payload == "1")
         {
@@ -46,7 +46,7 @@ void setup()
 
     pinMode(LIGHT, OUTPUT);
     Serial.begin(9600);
-    mNode->mqttClient.onMessage(messageReceived);
+    mNode->setOnMessage(messageReceived);
     mNode->setup();
 }
 
@@ -56,6 +56,6 @@ void loop()
     if (millis() - lastMillis > 1000)
     {
         lastMillis = millis();
-        mNode->mqttClient.publish("u/mk/uptime", String(millis()));
+        mNode->publish("uptime", String(millis()));
     }
 }
