@@ -39,13 +39,12 @@ void messageReceived(String &topic, String &originalTopic, String &payload)
 
 void setup()
 {
-    mNode = MQTTNode::getInstance();
+    Serial.begin(9600);
+    pinMode(LIGHT, OUTPUT);
 
+    mNode = MQTTNode::getInstance();
     mNode->setResetPin(RESET_BUTTON);
     mNode->setOnSubscribe(onSubscribe);
-
-    pinMode(LIGHT, OUTPUT);
-    Serial.begin(9600);
     mNode->setOnMessage(messageReceived);
     mNode->setup();
 }
