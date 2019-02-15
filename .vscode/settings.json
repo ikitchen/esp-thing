@@ -1,6 +1,6 @@
 {
     "terminal.integrated.env.linux": {
-        "PATH": "/home/mk/.platformio/penv/bin:/home/mk/.platformio/penv:/home/mk/.nvm/versions/node/v8.10.0/bin:/home/mk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/mk/.rvm/bin:/home/mk/.composer/vendor/bin/:/home/mk/.local/bin/:/home/mk/Apps/helm/linux-amd64/:/home/mk/Apps/terraform:/home/mk/git-repos/helm-assembly/scripts:/home/mk/Apps/kubectx:/home/mk/Apps/arduino-1.8.6:/home/mk/go/bin:/usr/local/go/bin:/home/mk/Android/Sdk/tools:/home/mk/Android/Sdk/platform-tools:/home/mk/Apps/android-studio/bin:/home/mk/.composer/vendor/bin/:/home/mk/.local/bin/:/home/mk/Apps/helm/linux-amd64/:/home/mk/Apps/terraform:/home/mk/git-repos/helm-assembly/scripts:/home/mk/Apps/kubectx:/home/mk/Apps/arduino-1.8.6:/home/mk/go/bin:/usr/local/go/bin:/home/mk/Android/Sdk/tools:/home/mk/Android/Sdk/platform-tools:/home/mk/Apps/android-studio/bin",
+        "PATH": "/home/mk/.platformio/penv/bin:/home/mk/.platformio/penv:/home/mk/.nvm/versions/node/v8.10.0/bin:/home/mk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/mk/.rvm/bin:/home/mk/.composer/vendor/bin/:/home/mk/.local/bin/:/home/mk/Apps/helm/linux-amd64/:/home/mk/Apps/terraform:/home/mk/git-repos/helm-assembly/scripts:/home/mk/Apps/kubectx:/home/mk/Apps/arduino-1.8.6:/home/mk/go/bin:/usr/local/go/bin:/home/mk/Android/Sdk/tools:/home/mk/Android/Sdk/platform-tools:/home/mk/Apps/android-studio/bin",
         "PLATFORMIO_CALLER": "vscode"
     }
 }

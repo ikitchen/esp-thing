@@ -1,13 +1,4 @@
-// This example uses an ESP32 Development Board
-// to connect to shiftr.io.
-//
-// You can check on your device after a successful
-// connection here: https://shiftr.io/try.
-//
-// by Joël Gähwiler
-// https://github.com/256dpi/arduino-mqtt
-
-#include "MQTTNode.h"
+#include <MQTTNode.h>
 
 #define LIGHT D1
 #define RESET_BUTTON D2
